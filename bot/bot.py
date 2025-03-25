@@ -1,15 +1,12 @@
 import logging
 import os
-from uuid import uuid4
+import uuid
 
-from dotenv import load_dotenv
 from telegram import InlineQueryResultArticle, InputTextMessageContent, Update
 from telegram.constants import ParseMode
 from telegram.ext import ApplicationBuilder, ContextTypes, InlineQueryHandler
 
 from bot.helpers import get_info
-
-load_dotenv('.env')
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +25,7 @@ async def embed_inline(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parse_mode=ParseMode.MARKDOWN
     )
     result = InlineQueryResultArticle(
-        id=uuid4(),
+        id=uuid.uuid4(),
         title=info["title"],
         description=info['description'],
         thumbnail_url=info['thumbnail'],
