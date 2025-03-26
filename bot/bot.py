@@ -10,6 +10,8 @@ from bot.helpers import get_info
 
 logger = logging.getLogger(__name__)
 
+BOT_TOKEN = os.getenv('BOT_TOKEN')
+
 
 async def embed_inline(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = update.inline_query.query
@@ -34,7 +36,6 @@ async def embed_inline(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 def main():
-    BOT_TOKEN = os.getenv('BOT_TOKEN')
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(InlineQueryHandler(embed_inline, pattern=r'https?://.*'))
     app.run_polling()
