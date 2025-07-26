@@ -4,7 +4,7 @@ from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 import requests
 from yt_dlp import YoutubeDL
 
-YTDL_WORKER = os.getenv('YTDL_WORKER')
+YTDL_WORKERS = os.getenv('YTDL_WORKERS').split(',')
 PO_TOKEN = os.getenv('PO_TOKEN')
 
 COOKIES_BROWSER = os.getenv('COOKIES_BROWSER')
@@ -28,13 +28,20 @@ ytdl_fallback = YoutubeDL({
 
 
 def get_info(url: str) -> dict:
-    if YTDL_WORKER and any(x in url for x in ['instagram.com', 'tiktok.com']):
-        return requests.get(YTDL_WORKER, params={'url': url}).json()
-    else:
-        try:
-            return ytdl.extract_info(url, download=False)
-        except:
-            return ytdl_fallback.extract_info(url, download=False)
+    if YTDL_WORKERS and any(x in url for x in ['instagram.com', 'tiktok.com']):
+        for _ in range(len(YTDL_WORKERS)):
+            worker = YTDL_WORKERS[0]
+            YTDL_WORKERS.append(YTDL_WORKERS.pop(0))
+            
+            try:
+                return requests.get(worker, params={'url': url}).json()
+            except:
+                continue
+
+    try:
+        return ytdl.extract_info(url, download=False)
+    except:
+        return ytdl_fallback.extract_info(url, download=False)
 
 
 def clean_url(url: str) -> str:
