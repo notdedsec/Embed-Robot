@@ -1,0 +1,14 @@
+.vercel
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.venv
+env/
+venv/
+ENV/
+.Python
+*.so
+.pytest_cache/
+.coverage
+.DS_Store
