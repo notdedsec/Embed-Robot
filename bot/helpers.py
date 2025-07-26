@@ -1,4 +1,5 @@
 import os
+from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 
 import requests
 from yt_dlp import YoutubeDL
@@ -35,3 +36,14 @@ def get_info(url: str) -> dict:
         except:
             return ytdl_fallback.extract_info(url, download=False)
 
+
+def clean_url(url: str) -> str:
+    parsed_url = urlparse(url)
+    query_params = parse_qsl(parsed_url.query)
+
+    filtered_params = [(k, v) for k, v in query_params if k == 'v']
+
+    clean_query = urlencode(filtered_params)
+    clean_url = urlunparse(parsed_url._replace(query=clean_query))
+
+    return clean_url

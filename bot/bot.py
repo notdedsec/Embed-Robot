@@ -6,7 +6,7 @@ from telegram import InlineQueryResultArticle, InputTextMessageContent, Update
 from telegram.constants import ParseMode
 from telegram.ext import ApplicationBuilder, ContextTypes, InlineQueryHandler
 
-from bot.helpers import get_info
+from bot.helpers import get_info, clean_url
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ async def embed_inline(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info(f'Extracted info for {url}')
 
     message = InputTextMessageContent(
-        message_text=f'[{info["title"]}]({info["url"]})',
+        message_text=f'[\u200B]({info["url"]}) [{info["title"]}]({clean_url(url)})',
         parse_mode=ParseMode.MARKDOWN
     )
     result = InlineQueryResultArticle(
