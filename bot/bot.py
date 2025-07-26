@@ -6,7 +6,7 @@ from telegram import InlineQueryResultArticle, InputTextMessageContent, Update
 from telegram.constants import ParseMode
 from telegram.ext import ApplicationBuilder, ContextTypes, InlineQueryHandler
 
-from bot.helpers import get_info, clean_url
+from bot.helpers import clean_url, get_info
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +17,25 @@ async def embed_inline(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = update.inline_query.query
     logger.info(f'Got inline query for {url}')
 
-    info = get_info(url)
+    try:
+        info = get_info(url)
+        if info.get('error'):
+            raise Exception(info['error'])
+
+    except Exception as e:
+        error = str(e).replace('ERROR: ', '').split('Use --')[0]
+        logger.error(f'Error extracting info for {url}: {error}')
+        results = [
+            InlineQueryResultArticle(
+                id=uuid.uuid4(),
+                title='No Embed?',
+                description=error,
+                input_message_content=InputTextMessageContent(error)
+            )
+        ]
+        await update.inline_query.answer(results, cache_time=0)
+        return
+
     logger.info(f'Extracted info for {url}')
 
     message = InputTextMessageContent(
