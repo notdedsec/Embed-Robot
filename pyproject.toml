@@ -1,12 +1,12 @@
 [project]
-name = "embedrobot"
+name = "Embed-Robot"
 version = "0.1.0"
-description = "Add your description here"
+description = "A Telegram inline bot that generates embeds for video URLs from social media platforms."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "python-dotenv>=1.1.0",
-    "python-telegram-bot>=22.0",
+    "python-telegram-bot~=22.0",
     "requests>=2.32.3",
-    "yt-dlp>=2025.3.25",
+    "yt-dlp",
 ]
